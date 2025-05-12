@@ -34,13 +34,15 @@ This project describes two approaches for aligning large language models to huma
 ## 2. Direct Preference Optimization (DPO)
 
 - **Base model**: Qwen 2.5-3B-Instruct  
-- **Data**: `vi-alpaca` preference pairs  
+- **Data**: `vi-alpaca-preference` preference pairs  
 - **Goal**: Increase the probability of producing the “chosen” response over the “rejected” response directly, without a separate reward model.  
 - **Training loop**:  
   ```python
   for x, y_chosen, y_rejected in preference_dataset:
       score_ch = model.logprob(y_chosen, x)
       score_rj = model.logprob(y_rejected, x)
+      # In Pytorch, we are using Gradient Descent instead of Gradient Ascent.
+      # That means we have to minimize the "-log" instead of maximize "log".
       loss = -torch.log(torch.sigmoid(score_ch - score_rj))
       loss.backward()
       optimizer.step()
