@@ -41,8 +41,8 @@ This project describes two approaches for aligning large language models to huma
   for x, y_chosen, y_rejected in preference_dataset:
       score_ch = model.logprob(y_chosen, x)
       score_rj = model.logprob(y_rejected, x)
-      # In Pytorch, we are using Gradient Descent instead of Gradient Ascent.
-      # That means we have to minimize the "-log" instead of maximize "log".
+      """ In Pytorch, we are using Gradient Descent instead of Gradient Ascent.
+      That means we have to minimize the "-log" instead of maximize "log". """
       loss = -torch.log(torch.sigmoid(score_ch - score_rj))
       loss.backward()
       optimizer.step()
